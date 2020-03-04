@@ -1,0 +1,8 @@
+logging:
+  level:
+    de:
+      mbur:
+        cachedemo: debug
+    org:
+      springframework:
+        cache: trace
