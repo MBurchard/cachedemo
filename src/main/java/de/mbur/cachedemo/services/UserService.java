@@ -9,19 +9,30 @@ import javax.annotation.Nonnull;
 
 import de.mbur.cachedemo.domain.User;
 import org.slf4j.Logger;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Service
-public class UserService {
+public class UserService implements ApplicationContextAware, InitializingBean {
 	public static final String CACHE_USERS = "users";
 	private static final Logger LOG = getLogger(UserService.class);
 
 	private final Map<String, User> users = new HashMap<>();
+	private ApplicationContext ctx;
+	private UserService self;
+
+	@Override
+	public void afterPropertiesSet() {
+		self = ctx.getBean(UserService.class);
+	}
 
 	@Async
 	public void asyncMethod() {
@@ -54,4 +65,9 @@ public class UserService {
 		return result;
 	}
 
+	@Override
+	public void setApplicationContext(@Nonnull final ApplicationContext ctx)
+			throws BeansException {
+		this.ctx = ctx;
+	}
 }
